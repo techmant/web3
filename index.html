@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>TechmanTS – Streaming y Servicios Digitales</title>
   <meta name="description" content="TechmanTS: venta de cuentas de entretenimiento y servicios digitales. Netflix, Max (HBO), Disney+, Prime Video, Crunchyroll, YouTube, Spotify, FlujoTV y más." />
   <meta name="theme-color" content="#0d0d0d" />
@@ -357,6 +357,7 @@
       transition: transform 0.28s ease, box-shadow 0.28s ease;
       z-index: 11;
       box-shadow: 0 8px 28px rgba(0,0,0,0.55);
+      outline: none !important;
     }
 
     .btn-ver-planes:hover {
@@ -472,6 +473,38 @@
   .wrapper:focus {
     outline: none !important;
     box-shadow: none !important;
+  }
+}
+
+/* ===== Eliminar el resaltado azul/celeste en dispositivos táctiles ===== */
+@media (hover: none) and (pointer: coarse) {
+  .wrapper,
+  .wrapper *,
+  .btn-ver-planes,
+  .testimonial-card,
+  .plan,
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent !important; /* Elimina el resaltado al tocar en iOS/Android */
+    outline: none !important; /* Elimina el contorno de foco */
+    box-shadow: none !important; /* Elimina sombras de foco por defecto */
+  }
+
+  /* También aseguramos que no aparezca al mantener presionado */
+  .wrapper:active,
+  .btn-ver-planes:active,
+  .plan:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Prevenir el efecto "long press" que a veces activa el menú contextual y el resaltado */
+  .wrapper,
+  .btn-ver-planes {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 }
   </style>
