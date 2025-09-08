@@ -296,41 +296,45 @@
 
     /* For touch devices: slightly smaller scale on focus */
     /* ===== Mejora para dispositivos táctiles ===== */
+/* ===== Mejora para dispositivos táctiles - Activar efecto al tocar Y al deslizar ===== */
 @media (hover: none) and (pointer: coarse) {
   .character {
     width: 42%;
     bottom: 60px;
-    transition: all 0.4s cubic-bezier(.2,.9,.3,1) !important;
+    transition: all 0.55s cubic-bezier(.2,.9,.3,1) !important;
   }
 
-  /* Activa el efecto al tocar la tarjeta */
-  .wrapper:active {
-    transform: perspective(900px) translateY(-4%) rotateX(15deg) !important;
-    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7) !important;
+  /* Efecto al tocar (touchstart) */
+  .wrapper:active,
+  .wrapper.touched {
+    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
   }
 
-  .wrapper:active .background {
-    transform: scale(1.04) !important;
-    filter: brightness(0.92) contrast(1.08) !important;
+  .wrapper:active .background,
+  .wrapper.touched .background {
+    transform: scale(1.06) !important;
+    filter: brightness(0.95) contrast(1.05) !important;
   }
 
-  .wrapper:active ~ .character {
-    transform: translateX(-50%) scale(1.25) translateY(-28px) !important;
+  .wrapper:active ~ .character,
+  .wrapper.touched ~ .character {
+    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
   }
 
   /* También activar efecto al recibir foco (accesibilidad + teclados) */
   .wrapper:focus {
-    transform: perspective(900px) translateY(-4%) rotateX(15deg) !important;
-    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7) !important;
+    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
   }
 
   .wrapper:focus .background {
-    transform: scale(1.04) !important;
-    filter: brightness(0.92) contrast(1.08) !important;
+    transform: scale(1.06) !important;
+    filter: brightness(0.95) contrast(1.05) !important;
   }
 
   .wrapper:focus ~ .character {
-    transform: translateX(-50%) scale(1.25) translateY(-28px) !important;
+    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
   }
 }
 
@@ -371,16 +375,17 @@
       box-shadow: 0 12px 36px rgba(0,0,0,0.65);
     }
 
-    /* Responsive adjustments for grid */
-    @media (max-width: 1024px) {
-      .card-container { max-width: 260px; height: 380px; }
-      .character { width: 48%; bottom: 64px; }
-    }
-    @media (max-width: 520px) {
-      .card-container { max-width: 100%; height: 320px; }
-      .character { width: 46%; bottom: 56px; }
-      .btn-ver-planes { padding: 8px 16px; font-size: 13px; }
-    }
+    
+   /* Responsive adjustments for grid */
+@media (max-width: 1024px) {
+  .card-container { max-width: 260px; height: 420px; } /* ↑ Aumentado de 380px a 420px */
+  .character { width: 48%; bottom: 70px; } /* ↑ Aumentado de 64px a 70px */
+}
+@media (max-width: 520px) {
+  .card-container { max-width: 100%; height: 380px; } /* ↑ Aumentado de 320px a 380px */
+  .character { width: 46%; bottom: 66px; } /* ↑ Aumentado de 56px a 66px */
+  .btn-ver-planes { padding: 8px 16px; font-size: 13px; }
+}
 
     /* =============== Testimonios con neón alternado =============== */
     #testimonial-slider { position:relative; overflow:hidden; height:300px; background:#0d0d0d; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #1a1a1a; }
@@ -1375,7 +1380,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
 })();
 </script>
 
-<!-- ✅ Soporte táctil para efectos en móviles -->
+<!-- ✅ Soporte táctil AVANZADO: activar efecto al deslizar el dedo -->
 <script>
 (function() {
   // Solo en dispositivos táctiles
@@ -1384,27 +1389,38 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
   const wrappers = document.querySelectorAll('.wrapper');
 
   wrappers.forEach(wrapper => {
+    let isTouching = false;
+
     // Al tocar
     wrapper.addEventListener('touchstart', function(e) {
+      isTouching = true;
       this.classList.add('touched');
-      // Forzar reflow
-      void this.offsetWidth;
-      // Aplicar estilos (opcional, ya lo hace CSS :active)
+    }, { passive: true });
+
+    // Al deslizar
+    wrapper.addEventListener('touchmove', function(e) {
+      if (isTouching) {
+        // Mantener la clase activa mientras se desliza
+        this.classList.add('touched');
+      }
     }, { passive: true });
 
     // Al soltar
     wrapper.addEventListener('touchend', function(e) {
+      isTouching = false;
       setTimeout(() => {
         this.classList.remove('touched');
-      }, 300);
+      }, 300); // Tiempo de transición para que la animación de salida sea suave
     }, { passive: true });
 
-    // Prevenir que el toque se propague y cause scroll no deseado
-    wrapper.addEventListener('touchmove', function(e) {
-      // No hacer nada, solo dejar que el navegador maneje el scroll
+    // Cancelar si el usuario sale del elemento
+    wrapper.addEventListener('touchcancel', function(e) {
+      isTouching = false;
+      this.classList.remove('touched');
     }, { passive: true });
   });
 })();
+</script>
 </script>
 </body>
 </html>
