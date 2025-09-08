@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TechmanTS – Streaming y Servicios Digitales</title>
   <meta name="description" content="TechmanTS: venta de cuentas de entretenimiento y servicios digitales. Netflix, Max (HBO), Disney+, Prime Video, Crunchyroll, YouTube, Spotify, FlujoTV y más." />
   <meta name="theme-color" content="#0d0d0d" />
@@ -297,7 +297,6 @@
     /* For touch devices: slightly smaller scale on focus */
     /* ===== Mejora para dispositivos táctiles ===== */
 /* ===== Mejora para dispositivos táctiles - Activar efecto al tocar Y al deslizar ===== */
-/* ===== Mejora para dispositivos táctiles - Sin parpadeo celeste ===== */
 @media (hover: none) and (pointer: coarse) {
   .character {
     width: 42%;
@@ -305,25 +304,37 @@
     transition: all 0.55s cubic-bezier(.2,.9,.3,1) !important;
   }
 
-  /* Solo usar :active, no :focus, para evitar el outline del navegador */
-  .wrapper:active {
+  /* Efecto al tocar (touchstart) */
+  .wrapper:active,
+  .wrapper.touched {
     transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
     box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
   }
 
-  .wrapper:active .background {
+  .wrapper:active .background,
+  .wrapper.touched .background {
     transform: scale(1.06) !important;
     filter: brightness(0.95) contrast(1.05) !important;
   }
 
-  .wrapper:active ~ .character {
+  .wrapper:active ~ .character,
+  .wrapper.touched ~ .character {
     transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
   }
 
-  /* Eliminar cualquier estilo de foco que pueda causar parpadeo */
+  /* También activar efecto al recibir foco (accesibilidad + teclados) */
   .wrapper:focus {
-    outline: none !important;
-    box-shadow: none !important;
+    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .wrapper:focus .background {
+    transform: scale(1.06) !important;
+    filter: brightness(0.95) contrast(1.05) !important;
+  }
+
+  .wrapper:focus ~ .character {
+    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
   }
 }
 
@@ -357,7 +368,6 @@
       transition: transform 0.28s ease, box-shadow 0.28s ease;
       z-index: 11;
       box-shadow: 0 8px 28px rgba(0,0,0,0.55);
-      outline: none !important;
     }
 
     .btn-ver-planes:hover {
@@ -365,7 +375,7 @@
       box-shadow: 0 12px 36px rgba(0,0,0,0.65);
     }
 
-    
+    /* Responsive adjustments for grid */
    /* Responsive adjustments for grid */
 @media (max-width: 1024px) {
   .card-container { max-width: 260px; height: 420px; } /* ↑ Aumentado de 380px a 420px */
@@ -465,46 +475,6 @@
   @keyframes subtleFloat {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-4px); }
-  }
-}
-
-/* Eliminar el contorno de foco por defecto en dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-  .wrapper:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-}
-
-/* ===== Eliminar el resaltado azul/celeste en dispositivos táctiles ===== */
-@media (hover: none) and (pointer: coarse) {
-  .wrapper,
-  .wrapper *,
-  .btn-ver-planes,
-  .testimonial-card,
-  .plan,
-  button,
-  a {
-    -webkit-tap-highlight-color: transparent !important; /* Elimina el resaltado al tocar en iOS/Android */
-    outline: none !important; /* Elimina el contorno de foco */
-    box-shadow: none !important; /* Elimina sombras de foco por defecto */
-  }
-
-  /* También aseguramos que no aparezca al mantener presionado */
-  .wrapper:active,
-  .btn-ver-planes:active,
-  .plan:active {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-
-  /* Prevenir el efecto "long press" que a veces activa el menú contextual y el resaltado */
-  .wrapper,
-  .btn-ver-planes {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
   }
 }
   </style>
