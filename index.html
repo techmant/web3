@@ -295,10 +295,44 @@
     }
 
     /* For touch devices: slightly smaller scale on focus */
-    @media (hover: none) and (pointer: coarse) {
-      .character { width: 42%; bottom: 60px; }
-      .wrapper:active ~ .character { transform: translateX(-50%) scale(1.05) translateY(-18px); }
-    }
+    /* ===== Mejora para dispositivos táctiles ===== */
+@media (hover: none) and (pointer: coarse) {
+  .character {
+    width: 42%;
+    bottom: 60px;
+    transition: all 0.4s cubic-bezier(.2,.9,.3,1) !important;
+  }
+
+  /* Activa el efecto al tocar la tarjeta */
+  .wrapper:active {
+    transform: perspective(900px) translateY(-4%) rotateX(15deg) !important;
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .wrapper:active .background {
+    transform: scale(1.04) !important;
+    filter: brightness(0.92) contrast(1.08) !important;
+  }
+
+  .wrapper:active ~ .character {
+    transform: translateX(-50%) scale(1.25) translateY(-28px) !important;
+  }
+
+  /* También activar efecto al recibir foco (accesibilidad + teclados) */
+  .wrapper:focus {
+    transform: perspective(900px) translateY(-4%) rotateX(15deg) !important;
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .wrapper:focus .background {
+    transform: scale(1.04) !important;
+    filter: brightness(0.92) contrast(1.08) !important;
+  }
+
+  .wrapper:focus ~ .character {
+    transform: translateX(-50%) scale(1.25) translateY(-28px) !important;
+  }
+}
 
    .platform-logo {
   position: absolute;
@@ -425,6 +459,18 @@
 
 .btn-back-to-top:hover i {
   transform: translateY(-2px);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card-container {
+    /* Añadir un sutil efecto de elevación al cargar */
+    animation: subtleFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes subtleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
 }
   </style>
 </head>
@@ -1329,5 +1375,36 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
 })();
 </script>
 
+<!-- ✅ Soporte táctil para efectos en móviles -->
+<script>
+(function() {
+  // Solo en dispositivos táctiles
+  if (!('ontouchstart' in window)) return;
+
+  const wrappers = document.querySelectorAll('.wrapper');
+
+  wrappers.forEach(wrapper => {
+    // Al tocar
+    wrapper.addEventListener('touchstart', function(e) {
+      this.classList.add('touched');
+      // Forzar reflow
+      void this.offsetWidth;
+      // Aplicar estilos (opcional, ya lo hace CSS :active)
+    }, { passive: true });
+
+    // Al soltar
+    wrapper.addEventListener('touchend', function(e) {
+      setTimeout(() => {
+        this.classList.remove('touched');
+      }, 300);
+    }, { passive: true });
+
+    // Prevenir que el toque se propague y cause scroll no deseado
+    wrapper.addEventListener('touchmove', function(e) {
+      // No hacer nada, solo dejar que el navegador maneje el scroll
+    }, { passive: true });
+  });
+})();
+</script>
 </body>
 </html>
