@@ -297,6 +297,7 @@
     /* For touch devices: slightly smaller scale on focus */
     /* ===== Mejora para dispositivos táctiles ===== */
 /* ===== Mejora para dispositivos táctiles - Activar efecto al tocar Y al deslizar ===== */
+/* ===== Mejora para dispositivos táctiles - Sin parpadeo celeste ===== */
 @media (hover: none) and (pointer: coarse) {
   .character {
     width: 42%;
@@ -304,37 +305,25 @@
     transition: all 0.55s cubic-bezier(.2,.9,.3,1) !important;
   }
 
-  /* Efecto al tocar (touchstart) */
-  .wrapper:active,
-  .wrapper.touched {
+  /* Solo usar :active, no :focus, para evitar el outline del navegador */
+  .wrapper:active {
     transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
     box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
   }
 
-  .wrapper:active .background,
-  .wrapper.touched .background {
+  .wrapper:active .background {
     transform: scale(1.06) !important;
     filter: brightness(0.95) contrast(1.05) !important;
   }
 
-  .wrapper:active ~ .character,
-  .wrapper.touched ~ .character {
+  .wrapper:active ~ .character {
     transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
   }
 
-  /* También activar efecto al recibir foco (accesibilidad + teclados) */
+  /* Eliminar cualquier estilo de foco que pueda causar parpadeo */
   .wrapper:focus {
-    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
-    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
-  }
-
-  .wrapper:focus .background {
-    transform: scale(1.06) !important;
-    filter: brightness(0.95) contrast(1.05) !important;
-  }
-
-  .wrapper:focus ~ .character {
-    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 }
 
@@ -475,6 +464,14 @@
   @keyframes subtleFloat {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-4px); }
+  }
+}
+
+/* Eliminar el contorno de foco por defecto en dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .wrapper:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
 }
   </style>
